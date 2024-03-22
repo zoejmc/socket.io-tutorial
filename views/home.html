@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Socket.io library -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <title>Socket.io Tutorial</title>
+</head>
+<body>
+    <!-- Bootstrap styles for message section -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="text-center mb-4">Chat Using Socket.io</h1>
+                <!-- Input field and button for sending messages -->
+                <div class="input-group mt-3">
+                    <input type="text" class="form-control message" placeholder="Type your message...">
+                    <button class="btn btn-info" onClick="sendMessage()">Send</button>
+                </div>
+                <!-- Display area for received messages -->
+                <h2 class="message-container mt-3"></h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Socket.io connection to server on port 3000
+        const socket = io('http://localhost:3000');
+
+        // Listen for connection event
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        // Listen for disconnection event
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+        });
+
+        // Listen for incoming messages from server
+        socket.on('message', (data) => {
+            // Display received message in the <h2> element
+            document.querySelector('h2').innerHTML = data;
+        });
+
+        // Function to send message to server
+        const sendMessage = () => {
+            // Get message input value
+            const messageInput = document.querySelector('.message');
+            const message = messageInput.value;
+            // Emit message to server
+            socket.emit('message', message);
+            // Clear input field after sending message
+            messageInput.value = '';
+        }
+    </script>
+</body>
+</html>

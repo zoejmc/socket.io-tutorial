@@ -15,12 +15,15 @@
             <div class="col-md-8 offset-md-2">
                 <h1 class="text-center mb-4">Chat Using Socket.io</h1>
                 <!-- Input field for username -->
+                <!-- Add class .username for DOM minipulation-->
                 <div class="input-group mt-3">
                     <input type="text" class="form-control username" placeholder="Enter your username...">
                 </div>
                 <!-- Input field and button for sending messages -->
+                <!-- Add class .message for DOM minipulation-->
                 <div class="input-group mt-3">
                     <input type="text" class="form-control message" placeholder="Type your message...">
+                    <!-- onClick event listener on the button-->
                     <button class="btn btn-info" onClick="sendMessage()">Send</button>
                 </div>
                 <!-- Display area for received messages -->
@@ -30,12 +33,12 @@
     </div>
 
     <script>
-        // Initialize Socket.io connection to server on port 3000
+        // We are going to start by initializing a Socket.IO connection from the client side to the server running on http://localhost:3000. This code sets up the communication channel between the client (browser) and the server
         const socket = io('http://localhost:3000');
 
-        // Function to send message to server
+        // Our next step is to define a function to send messages to the server, we will call this function sendMessage
         const sendMessage = () => {
-            // Get username input value
+            // Inside the function, we are going to start manipulating the DOM, we are going to target the two input fields one with a class of username and one with a class of message.
             const usernameInput = document.querySelector('.username');
             const username = usernameInput.value;
 
@@ -43,20 +46,20 @@
             const messageInput = document.querySelector('.message');
             const message = messageInput.value;
 
-            // Emit message and username to server
+            // Next, we will need to emit a message event to the server, along with an object containing the username and message data entered by the user.
             socket.emit('message', { username, message });
 
-            // Clear input fields after sending message
+            // Now we will clear the message input field after the message is sent.
             messageInput.value = '';
         }
 
-        // Listen for incoming messages from server
+        // Our final step is to create a call-back function that will listen for incoming messages from the server. Socket.on will listen for a message event from the server. When the client receives a message event from the server the data callback function will be executed.
         socket.on('message', (data) => {
-            // Create a new paragraph element
+            // Inside the callback function, we will create a new <p> element in the dom using document.createElement. This element will be used to display the incoming message.
             const messageElement = document.createElement('p');
-            // Set the message content
+            // Now we will set the content of the new <p> element by concatenating the username and message received from the server.
             messageElement.textContent = `${data.username}: ${data.message}`;
-            // Append the message to the message container
+            // Finally, we will append the <p> element to the class message container. This is where the messages will be displayed.
             document.querySelector('.message-container').appendChild(messageElement);
         });
     </script>
